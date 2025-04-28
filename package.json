@@ -24,6 +24,9 @@
     "url": "https://github.com/holepunchto/bare-form-data/issues"
   },
   "homepage": "https://github.com/holepunchto/bare-form-data#readme",
+  "dependencies": {
+    "bare-stream": "^2.6.5"
+  },
   "devDependencies": {
     "brittle": "^3.3.0",
     "prettier": "^3.3.3",

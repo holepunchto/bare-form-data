@@ -1,3 +1,4 @@
+const { ReadableStream } = require('bare-stream/web')
 const errors = require('./lib/errors')
 
 module.exports = exports = class FormData {
@@ -82,6 +83,37 @@ class Blob {
   // https://w3c.github.io/FileAPI/#dfn-type
   get type() {
     return this._type
+  }
+
+  // https://w3c.github.io/FileAPI/#stream-method-algo
+  stream() {
+    return new ReadableStream({
+      start(controller) {
+        controller.enqueue(this._bytes)
+        controller.close()
+      }
+    })
+  }
+
+  async buffer() {
+    return Buffer.from(this._bytes)
+  }
+
+  // https://w3c.github.io/FileAPI/#bytes-method-algo
+  async bytes() {
+    return this.buffer()
+  }
+
+  // https://w3c.github.io/FileAPI/#arraybuffer-method-algo
+  async arrayBuffer() {
+    const buffer = new ArrayBuffer(this._bytes.byteLength)
+    buffer.set(this._bytes)
+    return buffer
+  }
+
+  // https://w3c.github.io/FileAPI/#text-method-algo
+  async text() {
+    return this._bytes.toString()
   }
 
   [Symbol.for('bare.inspect')]() {
