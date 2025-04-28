@@ -190,8 +190,12 @@ function processBlobParts(parts) {
       chunks.push(buffer)
     } else if (isBlob(part)) {
       chunks.push(part._bytes)
-    } else {
+    } else if (Buffer.isBuffer(part)) {
       chunks.push(part)
+    } else if (ArrayBuffer.isView(part)) {
+      chunks.push(Buffer.from(part.buffer, part.byteOffset, part.byteLength))
+    } else {
+      chunks.push(Buffer.from(part))
     }
   }
 
