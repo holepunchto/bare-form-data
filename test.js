@@ -1,5 +1,5 @@
 const test = require('brittle')
-const { FormData, File } = require('.')
+const { FormData, Blob, File } = require('.')
 
 test('basic', (t) => {
   const form = new FormData()
@@ -13,4 +13,14 @@ test('basic', (t) => {
   t.ok(form)
 
   t.comment(FormData.toBlob(form))
+})
+
+test('forward blob type', (t) => {
+  const form = new FormData()
+
+  const blob = new Blob(['Hello blob'], { type: 'text/plain' })
+
+  form.append('blob', blob)
+
+  t.is(form.get('blob').type, 'text/plain')
 })

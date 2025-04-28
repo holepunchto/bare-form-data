@@ -9,7 +9,7 @@ class FormData {
   append(name, value, filename) {
     if (typeof value !== 'string') {
       if (!isFile(value) || filename) {
-        value = new File([value], filename || 'blob')
+        value = new File([value], filename || 'blob', { type: value.type })
       }
     }
 
