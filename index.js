@@ -1,7 +1,7 @@
 const { ReadableStream } = require('bare-stream/web')
 const errors = require('./lib/errors')
 
-module.exports = exports = class FormData {
+class FormData {
   constructor() {
     this._entries = []
   }
@@ -58,7 +58,9 @@ module.exports = exports = class FormData {
   }
 }
 
-exports.FormData = exports
+module.exports = exports = FormData
+
+exports.FormData = FormData
 
 function isFormData(value) {
   return value instanceof FormData
