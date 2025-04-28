@@ -70,7 +70,7 @@ exports.isFormData = isFormData
 
 class Blob {
   // https://w3c.github.io/FileAPI/#dom-blob-blob
-  constructor(parts, options) {
+  constructor(parts, options = {}) {
     const { type = '' } = options
 
     this._bytes = processBlobParts(parts)
@@ -140,7 +140,7 @@ Blob.isBlob = isBlob
 
 class File extends Blob {
   // https://w3c.github.io/FileAPI/#dom-file-file
-  constructor(parts, name, options) {
+  constructor(parts, name, options = {}) {
     const { lastModified = Date.now() } = options
 
     super(parts, options)
