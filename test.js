@@ -11,4 +11,6 @@ test('basic', (t) => {
   )
 
   t.ok(form)
+
+  t.comment(FormData.toBlob(form))
 })

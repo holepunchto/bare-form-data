@@ -1,3 +1,5 @@
+const errors = require('./lib/errors')
+
 module.exports = exports = class FormData {
   constructor() {
     this._entries = []
@@ -57,6 +59,12 @@ module.exports = exports = class FormData {
 
 exports.FormData = exports
 
+function isFormData(value) {
+  return value instanceof FormData
+}
+
+exports.isFormData = isFormData
+
 class Blob {
   // https://w3c.github.io/FileAPI/#dom-blob-blob
   constructor(parts, options) {
@@ -74,6 +82,15 @@ class Blob {
   // https://w3c.github.io/FileAPI/#dfn-type
   get type() {
     return this._type
+  }
+
+  [Symbol.for('bare.inspect')]() {
+    return {
+      __proto__: { constructor: Blob },
+
+      size: this.size,
+      type: this.type
+    }
   }
 }
 
@@ -105,6 +122,17 @@ class File extends Blob {
   get lastModified() {
     return this._lastModified
   }
+
+  [Symbol.for('bare.inspect')]() {
+    return {
+      __proto__: { constructor: File },
+
+      size: this.size,
+      type: this.type,
+      name: this.name,
+      lastModified: this.lastModified
+    }
+  }
 }
 
 exports.File = File
@@ -132,4 +160,61 @@ function processBlobParts(parts) {
   }
 
   return Buffer.concat(chunks)
+}
+
+function toBlob(formData, mimeType = 'multipart/form-data') {
+  switch (mimeType) {
+    case 'multipart/form-data':
+      return toMultipartBlob(formData)
+    default:
+      throw errors.INVALID_MIME_TYPE(`Invalid MIME type '${mimeType}'`)
+  }
+}
+
+exports.toBlob = toBlob
+
+function escape(value) {
+  return value.replace(/\n/g, '%0A').replace(/\r/g, '%0D').replace(/"/g, '%22')
+}
+
+function normalizeLinefeeds(value) {
+  return value.replace(/\r?\n|\r/g, '\r\n')
+}
+
+const linefeed = Buffer.from('\r\n')
+
+// https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#multipart/form-data-encoding-algorithm
+function toMultipartBlob(formData) {
+  const boundary = Math.random().toString(16).slice(2, 18).padStart(16, '0')
+
+  const prefix = `--${boundary}\r\nContent-Disposition: form-data`
+
+  const parts = []
+
+  for (const [name, value] of formData) {
+    if (typeof value === 'string') {
+      const chunk = Buffer.from(
+        prefix +
+          `; name="${escape(normalizeLinefeeds(name))}"` +
+          `\r\n\r\n${normalizeLinefeeds(value)}\r\n`
+      )
+
+      parts.push(chunk)
+    } else {
+      const chunk = Buffer.from(
+        prefix +
+          `; name="${escape(normalizeLinefeeds(name))}"` +
+          `; filename="${escape(value.name)}"` +
+          `\r\nContent-Type: ${value.type || 'application/octet-stream'}\r\n\r\n`
+      )
+
+      parts.push(chunk, value, linefeed)
+    }
+  }
+
+  parts.push(Buffer.from(`--${boundary}--\r\n`))
+
+  return new Blob(parts, {
+    type: 'multipart/form-data; boundary=' + boundary
+  })
 }

@@ -4,10 +4,12 @@
   "description": "Form data support for Bare",
   "exports": {
     "./package": "./package.json",
-    ".": "./index.js"
+    ".": "./index.js",
+    "./errors": "./lib/errors.js"
   },
   "files": [
-    "index.js"
+    "index.js",
+    "lib"
   ],
   "scripts": {
     "test": "prettier . --check && bare test.js"
