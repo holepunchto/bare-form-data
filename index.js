@@ -89,9 +89,11 @@ class Blob {
 
   // https://w3c.github.io/FileAPI/#stream-method-algo
   stream() {
+    const bytes = this._bytes
+
     return new ReadableStream({
       start(controller) {
-        controller.enqueue(this._bytes)
+        controller.enqueue(bytes)
         controller.close()
       }
     })
