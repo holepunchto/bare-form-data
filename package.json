@@ -5,10 +5,12 @@
   "exports": {
     "./package": "./package.json",
     ".": "./index.js",
+    "./global": "./global.js",
     "./errors": "./lib/errors.js"
   },
   "files": [
     "index.js",
+    "global.js",
     "lib"
   ],
   "scripts": {
