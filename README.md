@@ -14,10 +14,7 @@ const { FormData, File } = require('bare-form-data')
 const form = new FormData()
 
 form.append('title', 'Hello form')
-form.append(
-  'attachment',
-  new File(['My attachment'], 'attachment.txt', { type: 'text/plain' })
-)
+form.append('attachment', new File(['My attachment'], 'attachment.txt', { type: 'text/plain' }))
 ```
 
 ## License
