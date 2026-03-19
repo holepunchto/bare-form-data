@@ -136,7 +136,7 @@ function isBlob(value) {
   return value instanceof Blob
 }
 
-Blob.isBlob = isBlob
+exports.isBlob = Blob.isBlob = isBlob
 
 class File extends Blob {
   // https://w3c.github.io/FileAPI/#dom-file-file
@@ -177,7 +177,7 @@ function isFile(value) {
   return value instanceof File
 }
 
-File.isFile = isFile
+exports.isFile = File.isFile = isFile
 
 // https://w3c.github.io/FileAPI/#process-blob-parts
 function processBlobParts(parts) {
