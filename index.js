@@ -1,4 +1,5 @@
 const { ReadableStream } = require('bare-stream/web')
+const { isBuffer } = require('bare-buffer')
 const errors = require('./lib/errors')
 
 class FormData {
@@ -190,7 +191,7 @@ function processBlobParts(parts) {
       chunks.push(buffer)
     } else if (isBlob(part)) {
       chunks.push(part._bytes)
-    } else if (Buffer.isBuffer(part)) {
+    } else if (isBuffer(part)) {
       chunks.push(part)
     } else if (ArrayBuffer.isView(part)) {
       chunks.push(Buffer.from(part.buffer, part.byteOffset, part.byteLength))
