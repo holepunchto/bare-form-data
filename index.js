@@ -112,7 +112,7 @@ class Blob {
   // https://w3c.github.io/FileAPI/#arraybuffer-method-algo
   async arrayBuffer() {
     const buffer = new ArrayBuffer(this._bytes.byteLength)
-    buffer.set(this._bytes)
+    new Uint8Array(buffer).set(this._bytes)
     return buffer
   }
 
